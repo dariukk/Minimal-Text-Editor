@@ -39,6 +39,7 @@ void insertCharacter(char elem)
         new_node->prev = NULL;
         new_node->next = NULL;
         new_node->line = 1;
+        new_node->pos = 1;
         list->head = new_node;
         list->tail = new_node;
         list->cursor = list->tail;
@@ -50,9 +51,15 @@ void insertCharacter(char elem)
     list->tail->next = new_node;
 
     if (list->tail->elem == '\n')
+    {
         new_node->line = list->tail->line + 1;
+        new_node->pos = 1;
+    }
     else
+    {
         new_node->line = list->tail->line;
+        new_node->pos = list->tail->pos + 1;
+    }
 
     new_node->prev = list->tail;
     new_node->next = NULL;
@@ -106,6 +113,29 @@ void gotoLine(int line)
     list->cursor = node;
 }
 
+void gotoChar(int pos, int line)
+{
+    Node *node = list->cursor;
+    if (line != 0)
+    {
+        if (line > node->line)
+            while (node->line != line && node->next)
+                node = node->next;
+        else if (line < node->line)
+            while (node->line != line && node->prev)
+                node = node->prev;
+    }
+
+    if (pos > node->pos)
+        while (node->pos != pos && node->next)
+            node = node->next;
+    else if (pos < node->pos)
+        while (node->pos != pos && node->prev)
+            node = node->prev;
+
+    list->cursor = node;
+}
+
 void deleteLine(int line)
 {
     Node *node1, *node2;
@@ -113,8 +143,7 @@ void deleteLine(int line)
     node1 = list->head;
     node2 = list->tail;
 
-    while (node1 != NULL 
-    && !(node1->line == line - 1 && node1->next->line == line))
+    while (node1 != NULL && !(node1->line == line - 1 && node1->next->line == line))
         node1 = node1->next;
 
     while (node2 != NULL && !(node2->line == line + 1 && node2->prev->line == line))
@@ -147,12 +176,51 @@ void save()
     }
 }
 
+void backspace()
+{
+    Node *node = list->cursor;
+    node->prev->next = node->next;
+    node->next->prev = node->prev;
+    list->cursor = node->prev;
+    free(node);
+}
+
+void delete (int num)
+{
+    if (num == 0)
+        num = 1;
+
+    Node *node = list->cursor->next;
+    while (node && num)
+    {
+        --num;
+        Node *p = node;
+        p->prev->next = p->next;
+        p->next->prev = p->prev;
+        node = node->next;
+        free(p);
+    }
+
+    list->cursor = node->prev;
+}
+
 int getNum(char *s)
 {
+    int ans = 0, l = strlen(s), i = 0;
+    while (s[i] >= '0' && s[i] <= '9' && i < l)
+        ans = ans * 10 + (s[i] - '0'), ++i;
+
+    return ans;
+}
+
+int digits(int num)
+{
     int ans = 0;
-    for (int i = 0; i < strlen(s); ++i)
-        if (s[i] >= '0' && s[i] <= '9')
-            ans = ans * 10 + (s[i] - '0');
+    while (num)
+    {
+        ans++;
+        num /= 10;
+    }
 
     return ans;
 }
@@ -194,12 +262,32 @@ int doCommands()
         {
             // se sterge linia line daca este introdusa
             // sau se sterge linia pe care se afla cursorul
-            int line = getNum(command);
+            int line = getNum(command + 3);
 
             if (line == 0)
                 deleteLine(list->cursor->line);
             else
                 deleteLine(line);
+        }
+        else if (command[0] == 'g' && command[1] == 'c')
+        {
+            // cursorul este mutat pe pozitia introdusa
+            // daca nu este indicata si o linie se va considera linia curenta
+
+            int chr = getNum(command + 3);
+            int line = getNum(command + 4 + digits(chr));
+            gotoChar(chr, line);
+        }
+        else if (command[0] == 'b')
+        {
+            //sterge caracterul de dinaintea cursorului
+            backspace();
+        }
+        else if (command[0] == 'd')
+        {
+            // sterge un numar de caractere incepand cu pozitia curenta
+            int num = getNum(command + 2);
+            delete (num);
         }
     }
 
