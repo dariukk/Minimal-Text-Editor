@@ -7,7 +7,7 @@
 typedef struct Node
 {
     char elem;
-    int line;
+    int line, pos;
     struct Node *next;
     struct Node *prev;
 } Node;
