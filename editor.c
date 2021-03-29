@@ -112,7 +112,6 @@ void deleteLine(int line)
 
     node1 = list->head;
     node2 = list->tail;
-    node2->line--;
 
     while (node1 != NULL 
     && !(node1->line == line - 1 && node1->next->line == line))
@@ -120,14 +119,14 @@ void deleteLine(int line)
 
     while (node2 != NULL && !(node2->line == line + 1 && node2->prev->line == line))
     {
-        node2 = node2->prev;
         node2->line--;
+        node2 = node2->prev;
     }
 
-    /* free(node1->next);
+    free(node1->next);
     free(node2->prev);
     node1->next = node2;
-    node2->prev = node1;*/
+    node2->prev = node1;
 }
 
 void save()
