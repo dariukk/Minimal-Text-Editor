@@ -1,5 +1,6 @@
 #include "editor.h"
 
+FILE *in, *out;
 Stack *stack;
 ListText *finalList, *list;
 
@@ -17,6 +18,14 @@ void init()
     finalList->tail = NULL;
 
     stack = (Stack *)malloc(sizeof(Stack));
+}
+
+void printList(ListText *list)
+{
+    for (Node *node = list->head; node != NULL; node = node->next)
+        fprintf(out, "%c", node->elem);
+
+    fprintf(out, "\n");
 }
 
 void insertCharacter(char elem)
@@ -314,6 +323,7 @@ int main()
         }
         what = 1 - what;
     }
+
     printList(finalList);
 
     fclose(in);
