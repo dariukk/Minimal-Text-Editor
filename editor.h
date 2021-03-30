@@ -12,6 +12,8 @@ typedef struct Node
     struct Node *prev;
 } Node;
 
+FILE *in, *out;
+
 typedef struct ListText
 {
     Node *head;
@@ -27,14 +29,10 @@ typedef struct Stack
 
 } Stack;
 
-void init();
+void printList(ListText *list)
+{
+    for (Node *node = list->head; node != NULL; node = node->next)
+        fprintf(out, "%c", node->elem);
 
-void printList(ListText *list);
-
-void insertCharacter(char elem);
-
-int addText();
-
-void save();
-
-int doCommands();
+    fprintf(out, "\n");
+}
