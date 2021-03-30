@@ -25,7 +25,7 @@ void printList(ListText *list)
     for (Node *node = list->head; node != NULL; node = node->next)
         fprintf(out, "%c", node->elem);
 
-    fprintf(out,"\n");
+    fprintf(out, "\n");
 }
 
 void insertCharacter(char elem)
@@ -302,8 +302,8 @@ int main()
 
     in = fopen("editor.in", "r");
     out = fopen("editor.out", "w");
-
     int what = 1;
+    
     while (1)
     {
         if (what == 1)
