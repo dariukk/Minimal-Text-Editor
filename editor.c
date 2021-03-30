@@ -1,6 +1,5 @@
 #include "editor.h"
 
-FILE *in, *out;
 Stack *stack;
 ListText *finalList, *list;
 
@@ -18,14 +17,6 @@ void init()
     finalList->tail = NULL;
 
     stack = (Stack *)malloc(sizeof(Stack));
-}
-
-void printList(ListText *list)
-{
-    for (Node *node = list->head; node != NULL; node = node->next)
-        fprintf(out, "%c", node->elem);
-
-    fprintf(out, "\n");
 }
 
 void insertCharacter(char elem)
@@ -233,7 +224,6 @@ int doCommands()
     command = (char *)malloc(100 * sizeof(char));
 
     // !!! de bagat comenzile in stiva
-
     while (fgets(command, 100, in))
     {
         if (command[strlen(command) - 1] == '\n')
@@ -257,7 +247,7 @@ int doCommands()
         else if (command[0] == 'g' && command[1] == 'l')
         {
             // cursorul este mutat la inceputul liniei line
-            int line = getNum(command);
+            int line = getNum(command + 3);
             gotoLine(line);
         }
         else if (command[0] == 'd' && command[1] == 'l')
@@ -303,7 +293,7 @@ int main()
     in = fopen("editor.in", "r");
     out = fopen("editor.out", "w");
     int what = 1;
-    
+
     while (1)
     {
         if (what == 1)
