@@ -19,10 +19,22 @@ typedef struct ListText
     Node *cursor;
 } ListText;
 
-// declararea stivei pentru comenzi
-typedef struct Stack
-{
-    char *command;
-    struct Stack *next;
+void printList(ListText *list,FILE *out);
 
-} Stack;
+void insertCharacter(ListText *list, char elem);
+
+void gotoLine(ListText *list, int line);
+
+void gotoChar(ListText *list, int pos, int line);
+
+void deleteLine(ListText *list, int line);
+
+void save(ListText *list, ListText *finalList);
+
+void backspace(ListText *list);
+
+void delete (ListText *list, int num);
+
+int getNum(char *s);
+
+int digits(int num);
