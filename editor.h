@@ -1,6 +1,14 @@
+#ifndef EDITOR_H_
+#define EDITOR_H_
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "stack.h"
+#define addtext "addtext"
+
+#ifndef NODE
+#define NODE
 
 // declararea atat a listei pentru text
 // cat si a copiei acesteia
@@ -12,6 +20,11 @@ typedef struct Node
     struct Node *prev;
 } Node;
 
+#endif
+
+#ifndef LISTTEXT
+#define LISTTEXT
+
 typedef struct ListText
 {
     Node *head;
@@ -19,7 +32,9 @@ typedef struct ListText
     Node *cursor;
 } ListText;
 
-void printList(ListText *list,FILE *out);
+#endif
+
+void printList(ListText *list, FILE *out);
 
 void insertCharacter(ListText *list, char elem);
 
@@ -38,3 +53,7 @@ void delete (ListText *list, int num);
 int getNum(char *s);
 
 int digits(int num);
+
+void undo(ListText *list, Stack *stack);
+
+#endif
