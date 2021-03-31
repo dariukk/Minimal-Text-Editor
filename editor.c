@@ -19,21 +19,32 @@ int addText(ListText *list)
 {
     char chr;
     int ok = 0;
+
+    NodeStack *node;
+    node = (NodeStack *)malloc(sizeof(NodeStack));
+    node->num = 0;
+    node->command = (char *)malloc(sizeof(char));
+    strcpy(node->command, addtext);
+
     while (fscanf(in, "%c", &chr))
     {
         if (chr != ':')
         {
             if (ok == 1)
-                insertCharacter(list, ':');
+                insertCharacter(list, ':'), node->num++;
             insertCharacter(list, chr);
+
+            node->num++;
             ok = 0;
         }
         else
         {
             if (ok == 1)
             {
+                push(stack, node);
+
                 // se trece la modul de inserare comenzi
-                fscanf(in, "%c", &chr);
+                fscanf(in, "%c", &chr); // citesc caracterul 'i'
                 return 1;
             }
             ok = 1;
@@ -41,7 +52,9 @@ int addText(ListText *list)
     }
 
     if (ok == 1)
-        insertCharacter(list, ':');
+        insertCharacter(list, ':'), node->num++;
+
+    push(stack, node);
 
     return 0;
 }
@@ -49,6 +62,7 @@ int addText(ListText *list)
 int doCommands(ListText *list, ListText *finalList)
 {
     char *command;
+
     command = (char *)malloc(100 * sizeof(char));
 
     // !!! de bagat comenzile in stiva
@@ -57,7 +71,7 @@ int doCommands(ListText *list, ListText *finalList)
         if (command[strlen(command) - 1] == '\n')
             command[strlen(command) - 1] = '\0';
 
-        if (strcmp("::i", command) == 0)
+        if (command[0] == ':' && command[1] == ':' && command[2] == 'i')
         {
             // se trece la modul inserare text
             return 1;
@@ -109,6 +123,11 @@ int doCommands(ListText *list, ListText *finalList)
             int num = getNum(command + 2);
             delete (list, num);
         }
+        else if (command[0] == 'u')
+        {
+            // se efectueaza operatia de undo
+            undo(list, stack);
+        }
     }
 
     return 0;
@@ -120,6 +139,7 @@ int main()
 
     list = init();
     finalList = init();
+    stack = initStack();
 
     in = fopen("editor.in", "r");
     out = fopen("editor.out", "w");
@@ -143,6 +163,7 @@ int main()
             if (!doCommands(list, finalList))
                 break;
         }
+        
         what = 1 - what;
     }
 
