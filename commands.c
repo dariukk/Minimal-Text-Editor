@@ -1,6 +1,6 @@
 #include "editor.h"
 
-void printList(ListText *list,FILE *out)
+void printList(ListText *list, FILE *out)
 {
     for (Node *node = list->head; node != NULL; node = node->next)
         fprintf(out, "%c", node->elem);
@@ -129,6 +129,17 @@ void save(ListText *list, ListText *finalList)
 
 void backspace(ListText *list)
 {
+    if (list->cursor == list->tail)
+    {
+        Node *node = list->tail;
+        list->tail->prev->next = NULL;
+        list->tail = list->tail->prev;
+        list->cursor = list->tail;
+        free(node);
+
+        return;
+    }
+
     Node *node = list->cursor;
     node->prev->next = node->next;
     node->next->prev = node->prev;
