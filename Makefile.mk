@@ -6,7 +6,7 @@ DEPS = editor.h
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 editor: editor.c 
-	$(CC) -o hellomake editor.c 
+	$(CC) -o hellomake editor.c stack.c commands.c
 
 clean:
 	rm -f editor
