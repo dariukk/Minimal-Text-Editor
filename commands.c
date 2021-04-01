@@ -4,8 +4,6 @@ void printList(ListText *list, FILE *out)
 {
     for (Node *node = list->head; node != NULL; node = node->next)
         fprintf(out, "%c", node->elem);
-
-    fprintf(out, "\n");
 }
 
 void insertCharacter(ListText *list, char elem)
