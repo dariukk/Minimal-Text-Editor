@@ -9,7 +9,7 @@ void undo(ListText *list, Stack *stack)
     {
         // pentru a da undo la comanda de inserare text
         // stergem toate
-        
+
         int num = node->num;
         while (num)
         {
@@ -17,4 +17,7 @@ void undo(ListText *list, Stack *stack)
             --num;
         }
     }
+
+    free(node->command);
+    free(node);
 }
