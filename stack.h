@@ -38,4 +38,6 @@ char *top(Stack *s);
 
 void print_stack(Stack *s);
 
+void deleteStack(Stack *s);
+
 #endif
