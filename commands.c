@@ -6,6 +6,23 @@ void printList(ListText *list, FILE *out)
         fprintf(out, "%c", node->elem);
 }
 
+void deleteList(ListText *list)
+{
+    // sterg toate elementele din lista
+
+    Node *node;
+    list->cursor = list->head;
+    node = list->head;
+
+    while (node)
+    {
+        Node *p;
+        p = node;
+        node = node->next;
+        free(p);
+    }
+}
+
 void insertCharacter(ListText *list, char elem)
 {
     // inserez un nou caracter in lista dublu inlantuita
@@ -101,10 +118,20 @@ void deleteLine(ListText *list, int line)
         node2 = node2->prev;
     }
 
-    free(node1->next);
-    free(node2->prev);
+    Node *p=node1->next,*q=node2->prev;
+
     node1->next = node2;
     node2->prev = node1;
+
+    while(p!=q)
+    {
+        Node *aux=p;
+        p=p->next;
+        free(aux);
+    }
+
+    if(p!=NULL)
+    free(p);
 }
 
 void save(ListText *list, ListText *finalList)
