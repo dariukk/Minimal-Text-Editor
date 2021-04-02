@@ -23,7 +23,7 @@ int addText(ListText *list)
     NodeStack *node;
     node = (NodeStack *)malloc(sizeof(NodeStack));
     node->num = 0;
-    node->command = (char *)malloc(sizeof(char));
+    node->command = (char *)malloc(25 * sizeof(char));
     strcpy(node->command, addtext);
 
     while (fscanf(in, "%c", &chr))
@@ -74,11 +74,13 @@ int doCommands(ListText *list, ListText *finalList)
         if (command[0] == ':' && command[1] == ':' && command[2] == 'i')
         {
             // se trece la modul inserare text
+            free(command);
             return 1;
         }
         else if (strcmp("q", command) == 0)
         {
             // se inchide editorul
+            free(command);
             return 0;
         }
         else if (strcmp("s", command) == 0)
@@ -130,6 +132,7 @@ int doCommands(ListText *list, ListText *finalList)
         }
     }
 
+    free(command);
     return 0;
 }
 
@@ -152,6 +155,7 @@ int main()
             // mod inserare text
             // verific daca am ajuns la final de fisier
             // sau daca s-a inchis editorul
+
             if (!addText(list))
                 break;
         }
@@ -160,14 +164,22 @@ int main()
             // mod inserare comenzi
             // verific daca am ajuns la final de fisier
             // sau daca s-a inchis editorul
+
             if (!doCommands(list, finalList))
                 break;
         }
-        
+
         what = 1 - what;
     }
 
     printList(finalList, out);
+
+    deleteList(list);
+    deleteStack(stack);
+    
+    free(list);
+    free(finalList);
+    free(stack);
 
     fclose(in);
     fclose(out);
