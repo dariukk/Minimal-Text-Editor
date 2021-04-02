@@ -20,12 +20,28 @@ NodeStack *pop(Stack *s)
 {
     NodeStack *node = s->top;
     s->top = node->next;
+    
     return node;
 }
 
 char *top(Stack *s)
 {
     return s->top->command;
+}
+
+void deleteStack(Stack *s)
+{
+    NodeStack *node;
+    node = s->top;
+
+    while (node)
+    {
+        NodeStack *p;
+        p = node;
+        node = node->next;
+        free(p->command);
+        free(p);
+    }
 }
 
 void print_stack(Stack *s)
