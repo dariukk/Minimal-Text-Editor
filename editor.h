@@ -56,4 +56,6 @@ int digits(int num);
 
 void undo(ListText *list, Stack *stack);
 
+void deleteList(ListText *list);
+
 #endif
