@@ -1,3 +1,4 @@
+
 #include "editor.h"
 
 void printList(ListText *list, FILE *out)
