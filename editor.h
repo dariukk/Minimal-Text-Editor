@@ -4,8 +4,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "stack.h"
-#define addtext "addtext"
 
 #ifndef NODE
 #define NODE
@@ -34,6 +32,48 @@ typedef struct ListText
 
 #endif
 
+
+#ifndef NODESTACK
+#define NODESTACK
+
+#define addtext "addtext"
+
+
+// declararea stivei pentru comenzi
+typedef struct NodeStack
+{
+    char *command;
+    int num;
+    ListText *list;
+    struct NodeStack *next;
+} NodeStack;
+
+#endif
+
+#ifndef STACK
+#define STACK
+
+typedef struct Stack
+{
+    NodeStack *top;
+} Stack;
+
+#endif
+
+Stack *initStack();
+
+void push(Stack *s, NodeStack *node);
+
+NodeStack *pop(Stack *s);
+
+char *top(Stack *s);
+
+void print_stack(Stack *s);
+
+void deleteStack(Stack *s);
+
+ListText *initList();
+
 void printList(ListText *list, FILE *out);
 
 void insertCharacter(ListText *list, char elem);
@@ -54,7 +94,9 @@ int getNum(char *s);
 
 int digits(int num);
 
-void undo(ListText *list, Stack *stack);
+void undo(ListText *list, Stack *undoStack, Stack *redoStack);
+
+void redo(ListText *list, Stack *undoStack, Stack *redoStack);
 
 void deleteList(ListText *list);
 
