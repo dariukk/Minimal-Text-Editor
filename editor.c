@@ -1,10 +1,10 @@
 #include "editor.h"
-#include "stack.h"
 
 FILE *in, *out;
-Stack *stack;
+Stack *undoStack;
+Stack *redoStack;
 
-ListText *init()
+ListText *initList()
 {
     // initializez atat cele doua liste cat si stiva
     ListText *list = (ListText *)malloc(sizeof(ListText));
@@ -41,7 +41,7 @@ int addText(ListText *list)
         {
             if (ok == 1)
             {
-                push(stack, node);
+                push(undoStack, node);
 
                 // se trece la modul de inserare comenzi
                 fscanf(in, "%c", &chr); // citesc caracterul 'i'
@@ -54,7 +54,7 @@ int addText(ListText *list)
     if (ok == 1)
         insertCharacter(list, ':'), node->num++;
 
-    push(stack, node);
+    push(undoStack, node);
 
     return 0;
 }
@@ -128,7 +128,12 @@ int doCommands(ListText *list, ListText *finalList)
         else if (command[0] == 'u')
         {
             // se efectueaza operatia de undo
-            undo(list, stack);
+            undo(list, undoStack, redoStack);
+        }
+        else if (command[0] == 'r')
+        {
+            // se efectueaza operatia de redo
+            redo(list, undoStack, redoStack);
         }
     }
 
@@ -140,9 +145,10 @@ int main()
 {
     ListText *finalList, *list;
 
-    list = init();
-    finalList = init();
-    stack = initStack();
+    list = initList();
+    finalList = initList();
+    undoStack = initStack();
+    redoStack = initStack();
 
     in = fopen("editor.in", "r");
     out = fopen("editor.out", "w");
@@ -175,11 +181,11 @@ int main()
     printList(finalList, out);
 
     deleteList(list);
-    deleteStack(stack);
-    
+    deleteStack(undoStack);
+
     free(list);
     free(finalList);
-    free(stack);
+    free(undoStack);
 
     fclose(in);
     fclose(out);
