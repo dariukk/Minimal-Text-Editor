@@ -1,5 +1,5 @@
 
-#include "stack.h"
+#include "editor.h"
 
 Stack *initStack()
 {
