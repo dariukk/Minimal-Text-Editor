@@ -9,14 +9,17 @@ void printList(ListText *list, FILE *out)
 void reorderLines(ListText *list)
 {
     Node *node = list->head;
-    int line = 1;
+    int line = 1, pos = 1;
 
     while (node)
     {
         node->line = line;
-        if (node->elem == '\n')
-            ++line;
+        node->pos = pos;
 
+        if (node->elem == '\n')
+            ++line, pos = 0;
+
+        pos++;
         node = node->next;
     }
 }
@@ -60,25 +63,40 @@ void insertCharacter(ListText *list, char elem)
         return;
     }
 
-    // daca mai exista elemente in lista
-    // adaug caracterul la finalul listei
-    list->tail->next = new_node;
+    if (list->cursor == list->tail)
+    { // daca mai exista elemente in lista
+        // adaug caracterul la finalul listei
+        list->tail->next = new_node;
 
-    if (list->tail->elem == '\n')
-    {
-        new_node->line = list->tail->line + 1;
-        new_node->pos = 1;
-    }
-    else
-    {
-        new_node->line = list->tail->line;
-        new_node->pos = list->tail->pos + 1;
+        if (list->tail->elem == '\n')
+        {
+            new_node->line = list->tail->line + 1;
+            new_node->pos = 1;
+        }
+        else
+        {
+            new_node->line = list->tail->line;
+            new_node->pos = list->tail->pos + 1;
+        }
+
+        new_node->prev = list->tail;
+        new_node->next = NULL;
+        list->tail = new_node;
+        list->cursor = list->tail;
+        return;
     }
 
-    new_node->prev = list->tail;
-    new_node->next = NULL;
-    list->tail = new_node;
-    list->cursor = list->tail;
+    if (new_node->elem != '\n')
+    {
+        list->cursor->next->prev = new_node;
+        new_node->next = list->cursor->next;
+        list->cursor->next = new_node;
+        new_node->prev = list->cursor;
+
+        list->cursor = new_node;
+
+        reorderLines(list);
+    }
 }
 
 void gotoLine(ListText *list, int line)
@@ -99,6 +117,7 @@ void gotoLine(ListText *list, int line)
 void gotoChar(ListText *list, int pos, int line)
 {
     Node *node = list->cursor;
+
     if (line != 0)
     {
         if (line > node->line)
@@ -265,6 +284,63 @@ void replace(ListText *list, char *old, char *new)
     }
 }
 
+void replaceAll(ListText *list, char *old, char *new)
+{
+    Node *node = list->head;
+
+    // inlocuiesc toate aparitiile cuvantului old cu new
+    while (node)
+    {
+        Node *aux = node;
+        int i = 0, len = strlen(old);
+
+        while (aux && i < len && aux->elem == old[i])
+        {
+            ++i;
+            aux = aux->next;
+        }
+
+        if (i == len)
+        {
+            // am gasit o aparitie a lui old
+
+            Node *neww = (Node *)malloc(sizeof(Node)), *begin;
+            neww->elem = new[0];
+            begin = neww;
+
+            i = 1;
+            len = strlen(new);
+            while (i < len)
+            {
+                Node *p = (Node *)malloc(sizeof(Node));
+                p->elem = new[i];
+                ++i;
+                neww->next = p;
+                p->prev = neww;
+                neww = p;
+            }
+
+            if (node == list->head)
+            {
+                neww->next = aux;
+                aux->prev = neww;
+                list->head = begin;
+            }
+            else
+            {
+                node->prev->next = begin;
+                begin->prev = node->prev;
+                neww->next = aux;
+                aux->prev = neww;
+            }
+
+            node = aux;
+        }
+        else
+            node = node->next;
+    }
+}
+
 void deleteWord(ListText *list, char *word)
 {
     Node *node = list->cursor;
@@ -289,6 +365,46 @@ void deleteWord(ListText *list, char *word)
             aux->prev = node->prev;
 
             return;
+        }
+
+        node = node->next;
+    }
+}
+
+void deleteAllWords(ListText *list, char *word)
+{
+    Node *node = list->head;
+
+    // sterg toate aparitiile cuvantului word
+    while (node)
+    {
+        Node *aux = node;
+        int i = 0, len = strlen(word);
+
+        while (aux && i < len && aux->elem == word[i])
+        {
+            ++i;
+            aux = aux->next;
+        }
+
+        if (i == len)
+        {
+            // am gasit o aparitie a lui word
+
+            if (node == list->head)
+            {
+                list->head = aux;
+                aux->prev = NULL;
+            }
+
+            node->prev->next = aux;
+            aux->prev = node->prev;
+
+            if (node->prev->elem == '\n' && aux->elem == '\n')
+            {
+                node->prev->next = aux->next;
+                aux->next->prev = node->prev;
+            }
         }
 
         node = node->next;
