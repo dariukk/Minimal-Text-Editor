@@ -11,13 +11,12 @@ void undo(ListText *list, Stack *undoStack, Stack *redoStack)
         int num = node->num;
         while (num)
         {
-            insertCharacter(node->list, list->cursor->prev->elem);
+            insertCharacter(node->list, list->cursor->elem);
             backspace(list);
             --num;
         }
     }
 
     push(redoStack, node);
-    free(node->command);
-    free(node);
 }
+
