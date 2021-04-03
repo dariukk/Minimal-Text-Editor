@@ -104,6 +104,8 @@ int doCommands(ListText *list, ListText *finalList)
                 deleteLine(list, list->cursor->line);
             else
                 deleteLine(list, line);
+
+            reorderLines(list);
         }
         else if (command[0] == 'g' && command[1] == 'c')
         {
@@ -119,6 +121,15 @@ int doCommands(ListText *list, ListText *finalList)
             //sterge caracterul de dinaintea cursorului
             backspace(list);
         }
+        else if (command[0] == 'd' && command[1] == 'w')
+        {
+            // se efectueaza operatia delete word
+            char *word;
+            word = (char *)malloc(20 * sizeof(char));
+            word = getString(command + 3);
+            
+            deleteWord(list, word);
+        }
         else if (command[0] == 'd')
         {
             // sterge un numar de caractere incepand cu pozitia curenta
@@ -129,6 +140,19 @@ int doCommands(ListText *list, ListText *finalList)
         {
             // se efectueaza operatia de undo
             undo(list, undoStack, redoStack);
+        }
+        else if (command[0] == 'r' && command[1] == 'e')
+        {
+            // se efectueaza operatia replace
+            char *old, *new;
+
+            old = (char *)malloc(20 * sizeof(char));
+            new = (char *)malloc(20 * sizeof(char));
+
+            old = getString(command + 3);
+            new = getString(command + 4 + strlen(old));
+
+            replace(list, old, new);
         }
         else if (command[0] == 'r')
         {
