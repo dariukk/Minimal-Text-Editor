@@ -1,10 +1,24 @@
-
 #include "editor.h"
 
 void printList(ListText *list, FILE *out)
 {
     for (Node *node = list->head; node != NULL; node = node->next)
         fprintf(out, "%c", node->elem);
+}
+
+void reorderLines(ListText *list)
+{
+    Node *node = list->head;
+    int line = 1;
+
+    while (node)
+    {
+        node->line = line;
+        if (node->elem == '\n')
+            ++line;
+
+        node = node->next;
+    }
 }
 
 void deleteList(ListText **list)
@@ -113,9 +127,13 @@ void deleteLine(ListText *list, int line)
 
         while (node != NULL && node->line == 1)
         {
-            Node *p = node;
-            node = node->next;
+            Node *p = node->next;
+            free(node);
+            node = p;
         }
+
+        list->head = node;
+        list->cursor = node;
 
         return;
     }
@@ -199,6 +217,84 @@ void delete (ListText *list, int num)
     list->cursor = node->prev;
 }
 
+void replace(ListText *list, char *old, char *new)
+{
+    Node *node = list->cursor;
+
+    // inlocuiesc prima aparitie a cuvantului old cu new
+    while (node)
+    {
+        Node *aux = node;
+        int i = 0, len = strlen(old);
+
+        while (aux && i < len && aux->elem == old[i])
+        {
+            ++i;
+            aux = aux->next;
+        }
+
+        if (i == len)
+        {
+            // am gasit prima aparitie a lui old
+
+            Node *neww = (Node *)malloc(sizeof(Node)), *begin;
+            neww->elem = new[0];
+            begin = neww;
+
+            i = 1;
+            len = strlen(new);
+            while (i < len)
+            {
+                Node *p = (Node *)malloc(sizeof(Node));
+                p->elem = new[i];
+                ++i;
+                neww->next = p;
+                p->prev = neww;
+                neww = p;
+            }
+
+            node->prev->next = begin;
+            begin->prev = node->prev;
+            neww->next = aux;
+            aux->prev = neww;
+
+            return;
+        }
+
+        node = node->next;
+    }
+}
+
+void deleteWord(ListText *list, char *word)
+{
+    Node *node = list->cursor;
+
+    // sterg prima aparitie a cuvantului word
+    while (node)
+    {
+        Node *aux = node;
+        int i = 0, len = strlen(word);
+
+        while (aux && i < len && aux->elem == word[i])
+        {
+            ++i;
+            aux = aux->next;
+        }
+
+        if (i == len)
+        {
+            // am gasit prima aparitie a lui word
+
+            node->prev->next = aux;
+            aux->prev = node->prev;
+
+            return;
+        }
+
+        node = node->next;
+    }
+}
+
 int getNum(char *s)
 {
     int ans = 0, l = strlen(s), i = 0;
@@ -217,5 +313,20 @@ int digits(int num)
         num /= 10;
     }
 
+    return ans;
+}
+
+char *getString(char *s)
+{
+    char *ans = (char *)malloc(25 * sizeof(char));
+
+    int i = 0, len = strlen(s);
+    while (i < len && s[i] != ' ' && s[i] != '\n')
+    {
+        ans[i] = s[i];
+        ++i;
+    }
+
+    ans[i] = '\0';
     return ans;
 }
