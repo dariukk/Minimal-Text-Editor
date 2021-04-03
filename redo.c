@@ -1,4 +1,3 @@
-
 #include "editor.h"
 
 void redo(ListText *list, Stack *undoStack, Stack *redoStack)
