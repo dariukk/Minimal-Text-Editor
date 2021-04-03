@@ -12,6 +12,7 @@ void deleteList(ListText *list)
     // sterg toate elementele din lista
 
     Node *node;
+
     list->cursor = list->head;
     node = list->head;
 
@@ -105,6 +106,19 @@ void gotoChar(ListText *list, int pos, int line)
 
 void deleteLine(ListText *list, int line)
 {
+    if (line == 1)
+    {
+        Node *node = list->head;
+
+        while (node != NULL && node->line == 1)
+        {
+            Node *p = node;
+            node = node->next;
+        }
+
+        return;
+    }
+
     Node *node1, *node2;
 
     node1 = list->head;
@@ -119,20 +133,20 @@ void deleteLine(ListText *list, int line)
         node2 = node2->prev;
     }
 
-    Node *p=node1->next,*q=node2->prev;
+    Node *p = node1->next, *q = node2->prev;
 
     node1->next = node2;
     node2->prev = node1;
 
-    while(p!=q)
+    while (p != q)
     {
-        Node *aux=p;
-        p=p->next;
+        Node *aux = p;
+        p = p->next;
         free(aux);
     }
 
-    if(p!=NULL)
-    free(p);
+    if (p != NULL)
+        free(p);
 }
 
 void save(ListText *list, ListText *finalList)
