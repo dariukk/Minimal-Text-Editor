@@ -182,10 +182,12 @@ int main()
 
     deleteList(list);
     deleteStack(undoStack);
+    deleteStack(redoStack);
 
     free(list);
     free(finalList);
     free(undoStack);
+    free(redoStack);
 
     fclose(in);
     fclose(out);
