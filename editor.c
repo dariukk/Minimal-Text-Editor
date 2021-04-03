@@ -180,7 +180,8 @@ int main()
 
     printList(finalList, out);
 
-    deleteList(list);
+    deleteList(&list);
+    deleteList(&finalList);
     deleteStack(undoStack);
     deleteStack(redoStack);
 
