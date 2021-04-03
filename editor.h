@@ -98,4 +98,12 @@ void redo(ListText *list, Stack *undoStack, Stack *redoStack);
 
 void deleteList(ListText **list);
 
+void reorderLines(ListText *list);
+
+char *getString(char *s);
+
+void replace(ListText *list, char *old, char *new);
+
+void deleteWord(ListText *list, char *word);
+
 #endif
