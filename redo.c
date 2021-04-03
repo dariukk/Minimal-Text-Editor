@@ -7,7 +7,6 @@ void redo(ListText *list, Stack *undoStack, Stack *redoStack)
 
     if (strcmp(node->command, addtext) == 0)
     {
-
         Node *p = node->list->tail;
         while (p)
         {
@@ -16,6 +15,5 @@ void redo(ListText *list, Stack *undoStack, Stack *redoStack)
         }
     }
 
-    free(node->command);
-    free(node);
+    push(undoStack, node);
 }
