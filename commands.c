@@ -7,22 +7,23 @@ void printList(ListText *list, FILE *out)
         fprintf(out, "%c", node->elem);
 }
 
-void deleteList(ListText *list)
+void deleteList(ListText **list)
 {
     // sterg toate elementele din lista
 
     Node *node;
-
-    list->cursor = list->head;
-    node = list->head;
+    node = (*list)->head;
 
     while (node)
     {
-        Node *p;
-        p = node;
-        node = node->next;
-        free(p);
+        Node *next;
+        next = node->next;
+        free(node);
+        node = next;
     }
+
+    (*list)->head = NULL;
+    (*list)->tail = NULL;
 }
 
 void insertCharacter(ListText *list, char elem)
@@ -152,19 +153,11 @@ void deleteLine(ListText *list, int line)
 void save(ListText *list, ListText *finalList)
 {
     // copiez in finalList elementele listei list
-    Node *finalNode;
 
-    finalList->head = list->head;
-    finalList->tail = finalList->tail;
-    finalNode = finalList->head;
+    deleteList(&finalList);
 
-    for (Node *node = list->head; node->next != NULL; node = node->next)
-    {
-        finalNode->elem = node->elem;
-        finalNode->next = node->next;
-        finalNode->prev = node->prev;
-        finalNode = finalNode->next;
-    }
+    for (Node *node = list->head; node != NULL; node = node->next)
+        insertCharacter(finalList, node->elem);
 }
 
 void backspace(ListText *list)
