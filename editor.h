@@ -66,8 +66,6 @@ void push(Stack *s, NodeStack *node);
 
 NodeStack *pop(Stack *s);
 
-char *top(Stack *s);
-
 void print_stack(Stack *s);
 
 void deleteStack(Stack *s);
