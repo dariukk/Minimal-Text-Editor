@@ -32,12 +32,10 @@ typedef struct ListText
 
 #endif
 
-
 #ifndef NODESTACK
 #define NODESTACK
 
 #define addtext "addtext"
-
 
 // declararea stivei pentru comenzi
 typedef struct NodeStack
@@ -105,5 +103,9 @@ char *getString(char *s);
 void replace(ListText *list, char *old, char *new);
 
 void deleteWord(ListText *list, char *word);
+
+void replaceAll(ListText *list, char *old, char *new);
+
+void deleteAllWords(ListText *list, char *word);
 
 #endif
