@@ -1,4 +1,3 @@
-
 #include "editor.h"
 
 Stack *initStack()
@@ -35,12 +34,12 @@ void deleteStack(Stack *s)
 
     while (node)
     {
-        NodeStack *p;
-        p = node;
-        node = node->next;
-        free(p->command);
+        NodeStack *p = node->next;
 
-        free(p);
+        free(node->command);
+        free(node);
+
+        node = p;
     }
 }
 
