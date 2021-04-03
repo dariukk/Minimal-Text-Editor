@@ -20,7 +20,6 @@ NodeStack *pop(Stack *s)
 {
     NodeStack *node = s->top;
     s->top = node->next;
-    
     return node;
 }
 
@@ -40,6 +39,7 @@ void deleteStack(Stack *s)
         p = node;
         node = node->next;
         free(p->command);
+
         free(p);
     }
 }
