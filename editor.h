@@ -96,6 +96,6 @@ void undo(ListText *list, Stack *undoStack, Stack *redoStack);
 
 void redo(ListText *list, Stack *undoStack, Stack *redoStack);
 
-void deleteList(ListText *list);
+void deleteList(ListText **list);
 
 #endif
