@@ -9,8 +9,8 @@ ListText *initList()
     // initializez atat cele doua liste cat si stiva
     ListText *list = (ListText *)malloc(sizeof(ListText));
     list->head = NULL;
-    list->cursor = NULL;
     list->tail = NULL;
+    list->cursor = list->tail;
 
     return list;
 }
@@ -104,8 +104,6 @@ int doCommands(ListText *list, ListText *finalList)
                 deleteLine(list, list->cursor->line);
             else
                 deleteLine(list, line);
-
-            reorderLines(list);
         }
         else if (command[0] == 'g' && command[1] == 'c')
         {
@@ -127,8 +125,17 @@ int doCommands(ListText *list, ListText *finalList)
             char *word;
             word = (char *)malloc(20 * sizeof(char));
             word = getString(command + 3);
-            
+
             deleteWord(list, word);
+        }
+        else if (command[0] == 'd' && command[1] == 'a')
+        {
+            // se efectueaza operatia delete word
+            char *word;
+            word = (char *)malloc(20 * sizeof(char));
+            word = getString(command + 3);
+
+            deleteAllWords(list, word);
         }
         else if (command[0] == 'd')
         {
@@ -154,11 +161,26 @@ int doCommands(ListText *list, ListText *finalList)
 
             replace(list, old, new);
         }
+        else if (command[0] == 'r' && command[1] == 'a')
+        {
+            // se efectueaza operatia replace
+            char *old, *new;
+
+            old = (char *)malloc(20 * sizeof(char));
+            new = (char *)malloc(20 * sizeof(char));
+
+            old = getString(command + 3);
+            new = getString(command + 4 + strlen(old));
+
+            replaceAll(list, old, new);
+        }
         else if (command[0] == 'r')
         {
             // se efectueaza operatia de redo
             redo(list, undoStack, redoStack);
         }
+
+        reorderLines(list);
     }
 
     free(command);
