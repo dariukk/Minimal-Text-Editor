@@ -38,11 +38,17 @@ typedef struct ListText
 #define addtext "addtext"
 
 // declararea stivei pentru comenzi
-typedef struct NodeStack
+
+typedef struct element
 {
     char *command;
     int num;
     ListText *list;
+} element;
+
+typedef struct NodeStack
+{
+    element value;
     struct NodeStack *next;
 } NodeStack;
 
@@ -60,9 +66,9 @@ typedef struct Stack
 
 Stack *initStack();
 
-void push(Stack *s, NodeStack *node);
+void push(Stack *s, element value);
 
-NodeStack *pop(Stack *s);
+void pop(Stack *s);
 
 void print_stack(Stack *s);
 
@@ -107,5 +113,11 @@ void deleteWord(ListText *list, char *word);
 void replaceAll(ListText *list, char *old, char *new);
 
 void deleteAllWords(ListText *list, char *word);
+
+element newElement();
+
+Stack *initStack();
+
+element top(Stack *s);
 
 #endif
