@@ -1,12 +1,7 @@
-CC=gcc
-CFLAGS=-I.
-DEPS = editor.h stack.h
+all: editor.c stack.c commands.c undo.c redo.c editor.h
 
-%.o: %.c $(DEPS)
-	$(CC) -c -o $@ $< $(CFLAGS)
-
-build: editor.c 
-	$(CC) -o editor editor.c stack.c commands.c undo.c
+build: editor.c stack.c commands.c undo.c redo.c editor.h
+	gcc -g -Wall -o editor editor.c stack.c commands.c undo.c redo.c
 
 clean:
 	rm -f editor
