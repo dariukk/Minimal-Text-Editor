@@ -75,7 +75,9 @@ void insertCharacter(ListText *list, char elem)
     }
 
     if (list->cursor == list->tail)
-    { // daca mai exista elemente in lista
+    {
+        // daca mai exista elemente in lista
+        // si cursorul este la final
         // adaug caracterul la finalul listei
         list->tail->next = new_node;
 
@@ -288,6 +290,15 @@ void replace(ListText *list, char *old, char *new)
             neww->next = aux;
             aux->prev = neww;
 
+            // eliberez memoria
+            Node *p = node;
+            while (p != aux)
+            {
+                Node *next = p->next;
+                free(p);
+                p = next;
+            }
+
             return;
         }
 
@@ -375,6 +386,15 @@ void deleteWord(ListText *list, char *word)
             node->prev->next = aux;
             aux->prev = node->prev;
 
+            // eliberez memoria
+            Node *p = node;
+            while (p != aux)
+            {
+                Node *next = p->next;
+                free(p);
+                p = next;
+            }
+
             return;
         }
 
@@ -406,6 +426,7 @@ void deleteAllWords(ListText *list, char *word)
             {
                 list->head = aux;
                 aux->prev = NULL;
+                return;
             }
 
             node->prev->next = aux;
