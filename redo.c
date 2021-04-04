@@ -2,11 +2,12 @@
 
 void redo(ListText *list, Stack *undoStack, Stack *redoStack)
 {
-    NodeStack *node = pop(redoStack);
+    element value = top(redoStack);
+    pop(redoStack);
 
-    if (strcmp(node->command, addtext) == 0)
+    if (strcmp(value.command, addtext) == 0)
     {
-        Node *p = node->list->tail;
+        Node *p = value.list->tail;
         while (p)
         {
             insertCharacter(list, p->elem);
@@ -14,5 +15,5 @@ void redo(ListText *list, Stack *undoStack, Stack *redoStack)
         }
     }
 
-    push(undoStack, node);
+    push(undoStack, value);
 }
