@@ -2,21 +2,21 @@
 
 void undo(ListText *list, Stack *undoStack, Stack *redoStack)
 {
-    NodeStack *node = pop(undoStack);
+    element value = top(undoStack);
 
-    node->list = initList();
+    pop(undoStack);
 
-    if (strcmp(node->command, addtext) == 0)
+    if (strcmp(value.command, addtext) == 0)
     {
-        int num = node->num;
+
+        int num = value.num;
         while (num)
         {
-            insertCharacter(node->list, list->cursor->elem);
+            insertCharacter(value.list, list->cursor->elem);
             backspace(list);
             --num;
         }
     }
 
-    push(redoStack, node);
+    push(redoStack, value);
 }
-
