@@ -4,37 +4,23 @@ FILE *in, *out;
 Stack *undoStack;
 Stack *redoStack;
 
-ListText *initList()
-{
-    // initializez atat cele doua liste cat si stiva
-    ListText *list = (ListText *)malloc(sizeof(ListText));
-    list->head = NULL;
-    list->tail = NULL;
-    list->cursor = list->tail;
-
-    return list;
-}
-
 int addText(ListText *list)
 {
     char chr;
     int ok = 0;
 
-    NodeStack *node;
-    node = (NodeStack *)malloc(sizeof(NodeStack));
-    node->num = 0;
-    node->command = (char *)malloc(25 * sizeof(char));
-    strcpy(node->command, addtext);
+    element node = newElement();
+    strcpy(node.command, addtext);
 
     while (fscanf(in, "%c", &chr))
     {
         if (chr != ':')
         {
             if (ok == 1)
-                insertCharacter(list, ':'), node->num++;
+                insertCharacter(list, ':'), node.num++;
             insertCharacter(list, chr);
 
-            node->num++;
+            node.num++;
             ok = 0;
         }
         else
@@ -52,7 +38,7 @@ int addText(ListText *list)
     }
 
     if (ok == 1)
-        insertCharacter(list, ':'), node->num++;
+        insertCharacter(list, ':'), node.num++;
 
     push(undoStack, node);
 
@@ -65,7 +51,6 @@ int doCommands(ListText *list, ListText *finalList)
 
     command = (char *)malloc(100 * sizeof(char));
 
-    // !!! de bagat comenzile in stiva
     while (fgets(command, 100, in))
     {
         if (command[strlen(command) - 1] == '\n')
