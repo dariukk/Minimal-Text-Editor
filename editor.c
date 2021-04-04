@@ -108,19 +108,19 @@ int doCommands(ListText *list, ListText *finalList)
         {
             // se efectueaza operatia delete word
             char *word;
-            word = (char *)malloc(20 * sizeof(char));
             word = getString(command + 3);
 
             deleteWord(list, word);
+            free(word);
         }
         else if (command[0] == 'd' && command[1] == 'a')
         {
             // se efectueaza operatia delete word
             char *word;
-            word = (char *)malloc(20 * sizeof(char));
             word = getString(command + 3);
 
             deleteAllWords(list, word);
+            free(word);
         }
         else if (command[0] == 'd')
         {
@@ -138,26 +138,26 @@ int doCommands(ListText *list, ListText *finalList)
             // se efectueaza operatia replace
             char *old, *new;
 
-            old = (char *)malloc(20 * sizeof(char));
-            new = (char *)malloc(20 * sizeof(char));
-
             old = getString(command + 3);
             new = getString(command + 4 + strlen(old));
 
             replace(list, old, new);
+
+            free(old);
+            free(new);
         }
         else if (command[0] == 'r' && command[1] == 'a')
         {
             // se efectueaza operatia replace
             char *old, *new;
 
-            old = (char *)malloc(20 * sizeof(char));
-            new = (char *)malloc(20 * sizeof(char));
-
             old = getString(command + 3);
             new = getString(command + 4 + strlen(old));
 
             replaceAll(list, old, new);
+
+            free(old);
+            free(new);
         }
         else if (command[0] == 'r')
         {
