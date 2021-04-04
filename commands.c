@@ -1,5 +1,16 @@
 #include "editor.h"
 
+ListText *initList()
+{
+    // initializez atat cele doua liste cat si stiva
+    ListText *list = (ListText *)malloc(sizeof(ListText));
+    list->head = NULL;
+    list->tail = NULL;
+    list->cursor = list->tail;
+
+    return list;
+}
+
 void printList(ListText *list, FILE *out)
 {
     for (Node *node = list->head; node != NULL; node = node->next)
