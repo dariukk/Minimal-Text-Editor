@@ -110,6 +110,8 @@ void insertCharacter(ListText *list, char elem)
 
         reorderLines(list);
     }
+    else
+        free(new_node);
 }
 
 void gotoLine(ListText *list, int line)
@@ -342,10 +344,14 @@ void replaceAll(ListText *list, char *old, char *new)
                 neww = p;
             }
 
-            if (node == list->head)
+            if (node->line == 1 && node->pos == 1)
             {
                 neww->next = aux;
                 aux->prev = neww;
+
+                if (list->head == list->cursor)
+                    list->cursor = begin;
+
                 list->head = begin;
             }
             else
@@ -356,7 +362,13 @@ void replaceAll(ListText *list, char *old, char *new)
                 aux->prev = neww;
             }
 
-            node = aux;
+            // eliberez memoria
+            while (node != aux)
+            {
+                Node *next = node->next;
+                free(node);
+                node = next;
+            }
         }
         else
             node = node->next;
@@ -436,10 +448,19 @@ void deleteAllWords(ListText *list, char *word)
             {
                 node->prev->next = aux->next;
                 aux->next->prev = node->prev;
+                aux = aux->next;
+            }
+
+            // eliberez memoria
+            while (node != aux)
+            {
+                Node *next = node->next;
+                free(node);
+                node = next;
             }
         }
-
-        node = node->next;
+        else
+            node = node->next;
     }
 }
 
