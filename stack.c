@@ -70,14 +70,3 @@ void deleteStack(Stack *s)
         node = p;
     }
 }
-
-void print_stack(Stack *s)
-{
-    if (!s)
-        return;
-
-    for (NodeStack *it = s->top; it != NULL; it = it->next)
-    {
-        printf("%s ", it->value.command);
-    }
-}
