@@ -1,3 +1,6 @@
+#define addtext "addtext"
+#define del "d"
+
 #ifndef EDITOR_H_
 #define EDITOR_H_
 
@@ -35,14 +38,12 @@ typedef struct ListText
 #ifndef NODESTACK
 #define NODESTACK
 
-#define addtext "addtext"
-
 // declararea stivei pentru comenzi
 
 typedef struct element
 {
     char *command;
-    int num;
+    int num, beginofLine;
     ListText *list;
 } element;
 
@@ -90,7 +91,7 @@ void save(ListText *list, ListText *finalList);
 
 void backspace(ListText *list, int isUndo);
 
-void delete (ListText *list, int num, int beginofLine);
+void delete (ListText *list, int num, int beginofLine, element node);
 
 void deleteNewLines(ListText *list);
 
@@ -115,6 +116,8 @@ void deleteWord(ListText *list, char *word);
 void replaceAll(ListText *list, char *old, char *new);
 
 void deleteAllWords(ListText *list, char *word);
+
+void deleteNodeStack(NodeStack *node);
 
 element newElement();
 
