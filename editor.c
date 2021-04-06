@@ -7,13 +7,16 @@ Stack *redoStack;
 int addText(ListText *list)
 {
     char chr;
-    int ok = 0;
+    int ok = 0, multipleLines = 0;
 
     element node = newElement();
     strcpy(node.command, addtext);
 
     while (fscanf(in, "%c", &chr))
     {
+        if (chr == '\n')
+            multipleLines++;
+
         if (chr != ':')
         {
             if (ok == 1)
@@ -27,10 +30,15 @@ int addText(ListText *list)
         {
             if (ok == 1)
             {
+                if (multipleLines <= 1)
+                    if (list->cursor != list->tail)
+                        backspace(list, 1);
+
                 push(undoStack, node);
 
                 // se trece la modul de inserare comenzi
                 fscanf(in, "%c", &chr); // citesc caracterul 'i'
+
                 return 1;
             }
             ok = 1;
@@ -48,6 +56,7 @@ int addText(ListText *list)
 int doCommands(ListText *list, ListText *finalList)
 {
     char *command;
+    int beginofLine = 0;
 
     command = (char *)malloc(100 * sizeof(char));
 
@@ -78,6 +87,7 @@ int doCommands(ListText *list, ListText *finalList)
             // cursorul este mutat la inceputul liniei line
             int line = getNum(command + 3);
             gotoLine(list, line);
+            beginofLine = 1;
         }
         else if (command[0] == 'd' && command[1] == 'l')
         {
@@ -98,11 +108,13 @@ int doCommands(ListText *list, ListText *finalList)
             int chr = getNum(command + 3);
             int line = getNum(command + 4 + digits(chr));
             gotoChar(list, chr, line);
+
+            beginofLine = 0;
         }
         else if (command[0] == 'b')
         {
             //sterge caracterul de dinaintea cursorului
-            backspace(list);
+            backspace(list, 0);
         }
         else if (command[0] == 'd' && command[1] == 'w')
         {
@@ -126,7 +138,7 @@ int doCommands(ListText *list, ListText *finalList)
         {
             // sterge un numar de caractere incepand cu pozitia curenta
             int num = getNum(command + 2);
-            delete (list, num);
+            delete (list, num, beginofLine);
         }
         else if (command[0] == 'u')
         {
@@ -166,6 +178,7 @@ int doCommands(ListText *list, ListText *finalList)
         }
 
         reorderLines(list);
+        deleteNewLines(list);
     }
 
     free(command);
