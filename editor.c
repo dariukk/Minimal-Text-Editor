@@ -108,12 +108,9 @@ int doCommands(ListText *list, ListText *finalList)
 
             int chr = getNum(command + 3);
             int line = getNum(command + 4 + digits(chr));
-            element node = newElement();
 
             gotoChar(list, chr, line);
-            push(undoStack, node);
             beginofLine = 0;
-            push(undoStack, node);
         }
         else if (command[0] == 'b')
         {
