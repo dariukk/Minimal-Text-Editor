@@ -13,7 +13,9 @@ ListText *initList()
 
 void printList(ListText *list, FILE *out)
 {
-    for (Node *node = list->head; node != NULL; node = node->next)
+    Node *node;
+
+    for (node = list->head; node != NULL; node = node->next)
         fprintf(out, "%c", node->elem);
 }
 
@@ -99,19 +101,32 @@ void insertCharacter(ListText *list, char elem)
         return;
     }
 
-    if (new_node->elem != '\n')
+    list->cursor->next->prev = new_node;
+    new_node->next = list->cursor->next;
+    list->cursor->next = new_node;
+    new_node->prev = list->cursor;
+
+    list->cursor = new_node;
+
+    reorderLines(list);
+}
+
+void deleteNewLines(ListText *list)
+{
+    Node *node = list->head;
+
+    while (node->next)
     {
-        list->cursor->next->prev = new_node;
-        new_node->next = list->cursor->next;
-        list->cursor->next = new_node;
-        new_node->prev = list->cursor;
-
-        list->cursor = new_node;
-
-        reorderLines(list);
+        if (node->elem == '\n' && node->next->elem == '\n')
+        {
+            Node *p = node;
+            node->prev->next = node->next;
+            node->next->prev = node->prev;
+            node = node->next;
+            free(p);
+        }
+        node = node->next;
     }
-    else
-        free(new_node);
 }
 
 void gotoLine(ListText *list, int line)
@@ -212,15 +227,28 @@ void save(ListText *list, ListText *finalList)
         insertCharacter(finalList, node->elem);
 }
 
-void backspace(ListText *list)
+void backspace(ListText *list, int isUndo)
 {
     if (list->cursor == list->tail)
     {
-        Node *node = list->tail;
-        list->tail->prev->next = NULL;
-        list->tail = list->tail->prev;
-        list->cursor = list->tail;
-        free(node);
+        if (list->tail->elem == '\n' && isUndo == 0)
+        {
+            // daca aplic operatia backspace pe text
+            // voi sterge un caracter diferit de '\n'
+            // acest lucru nu se aplica si la operatiile de undo
+
+            Node *node = list->cursor->prev;
+            node->prev->next = node->next;
+            node->next->prev = node->prev;
+            list->cursor = node->prev;
+            return;
+        }
+
+        Node *node = list->tail->prev;
+        node->next = NULL;
+        list->cursor = node;
+        free(list->tail);
+        list->tail = node;
 
         return;
     }
@@ -232,12 +260,37 @@ void backspace(ListText *list)
     free(node);
 }
 
-void delete (ListText *list, int num)
+void delete (ListText *list, int num, int beginofLine)
 {
     if (num == 0)
         num = 1;
 
+    // daca cursorul se afla la inceput de linie
+    // comanda d va sterge incepand cu primul caracter de pe linie
+    // altfel, comanda d va sterge incepand cu urmatorul caracter
+    // in raport cu pozitia cursorului
+
+    if (beginofLine == 1 && list->cursor->line == 1)
+    {
+        Node *node = list->head;
+
+        while (node && num)
+        {
+            --num;
+            Node *p = node;
+            node = node->next;
+            free(p);
+        }
+
+        list->cursor = node;
+        list->head = node;
+    }
+
     Node *node = list->cursor->next;
+
+    if (beginofLine == 1)
+        node = list->cursor;
+
     while (node && num)
     {
         --num;
@@ -249,6 +302,9 @@ void delete (ListText *list, int num)
     }
 
     list->cursor = node->prev;
+
+    if (beginofLine == 1)
+        list->cursor = node;
 }
 
 void replace(ListText *list, char *old, char *new)
