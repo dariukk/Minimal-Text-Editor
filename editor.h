@@ -88,9 +88,11 @@ void deleteLine(ListText *list, int line);
 
 void save(ListText *list, ListText *finalList);
 
-void backspace(ListText *list);
+void backspace(ListText *list, int isUndo);
 
-void delete (ListText *list, int num);
+void delete (ListText *list, int num, int beginofLine);
+
+void deleteNewLines(ListText *list);
 
 int getNum(char *s);
 
