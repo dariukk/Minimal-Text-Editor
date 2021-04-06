@@ -14,6 +14,15 @@ void redo(ListText *list, Stack *undoStack, Stack *redoStack)
             p = p->prev;
         }
     }
+    else if (strcmp(value.command, del) == 0)
+    {
+        int num = value.num;
+        while (num)
+        {
+            backspace(list, 1);
+            --num;
+        }
+    }
 
     push(undoStack, value);
 }
