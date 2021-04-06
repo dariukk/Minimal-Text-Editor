@@ -260,7 +260,7 @@ void backspace(ListText *list, int isUndo)
     free(node);
 }
 
-void delete (ListText *list, int num, int beginofLine)
+void delete (ListText *list, int num, int beginofLine, element nodeStack)
 {
     if (num == 0)
         num = 1;
@@ -279,6 +279,7 @@ void delete (ListText *list, int num, int beginofLine)
             --num;
             Node *p = node;
             node = node->next;
+            insertCharacter(nodeStack.list, p->elem);
             free(p);
         }
 
@@ -295,6 +296,7 @@ void delete (ListText *list, int num, int beginofLine)
     {
         --num;
         Node *p = node;
+        insertCharacter(nodeStack.list, p->elem);
         p->prev->next = p->next;
         p->next->prev = p->prev;
         node = node->next;
