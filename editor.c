@@ -62,6 +62,7 @@ int doCommands(ListText *list, ListText *finalList)
 
     while (fgets(command, 100, in))
     {
+
         if (command[strlen(command) - 1] == '\n')
             command[strlen(command) - 1] = '\0';
 
@@ -107,9 +108,12 @@ int doCommands(ListText *list, ListText *finalList)
 
             int chr = getNum(command + 3);
             int line = getNum(command + 4 + digits(chr));
-            gotoChar(list, chr, line);
+            element node = newElement();
 
+            gotoChar(list, chr, line);
+            push(undoStack, node);
             beginofLine = 0;
+            push(undoStack, node);
         }
         else if (command[0] == 'b')
         {
@@ -137,8 +141,17 @@ int doCommands(ListText *list, ListText *finalList)
         else if (command[0] == 'd')
         {
             // sterge un numar de caractere incepand cu pozitia curenta
+            element node = newElement();
             int num = getNum(command + 2);
-            delete (list, num, beginofLine);
+
+            strcpy(node.command, del);
+            node.num = num;
+            node.beginofLine = beginofLine;
+            if (node.num == 0)
+                node.num = 1;
+
+            delete (list, num, beginofLine, node);
+            push(undoStack, node);
         }
         else if (command[0] == 'u')
         {
