@@ -2,6 +2,7 @@
 #define del "d"
 #define gochar "gc"
 #define goline "gl"
+#define deleteword "dw"
 
 #ifndef EDITOR_H_
 #define EDITOR_H_
