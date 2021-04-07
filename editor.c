@@ -130,9 +130,11 @@ int doCommands(ListText *list, ListText *finalList)
         else if (command[0] == 'd' && command[1] == 'w')
         {
             // se efectueaza operatia delete word
+
             char *word;
             word = getString(command + 3);
             deleteWord(list, word);
+
             free(word);
         }
         else if (command[0] == 'd' && command[1] == 'a')
