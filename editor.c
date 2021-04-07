@@ -86,9 +86,15 @@ int doCommands(ListText *list, ListText *finalList)
         else if (command[0] == 'g' && command[1] == 'l')
         {
             // cursorul este mutat la inceputul liniei line
+
+            element node = newElement();
             int line = getNum(command + 3);
-            gotoLine(list, line);
+            strcpy(node.command, goline);
+
+            gotoLine(list, line, node, 0);
+
             beginofLine = 1;
+            push(undoStack, node);
         }
         else if (command[0] == 'd' && command[1] == 'l')
         {
@@ -106,11 +112,15 @@ int doCommands(ListText *list, ListText *finalList)
             // cursorul este mutat pe pozitia introdusa
             // daca nu este indicata si o linie se va considera linia curenta
 
+            element node = newElement();
             int chr = getNum(command + 3);
             int line = getNum(command + 4 + digits(chr));
 
-            gotoChar(list, chr, line);
+            strcpy(node.command, gochar);
+            gotoChar(list, chr, line, &node, 0);
             beginofLine = 0;
+
+            push(undoStack, node);
         }
         else if (command[0] == 'b')
         {
@@ -122,7 +132,6 @@ int doCommands(ListText *list, ListText *finalList)
             // se efectueaza operatia delete word
             char *word;
             word = getString(command + 3);
-
             deleteWord(list, word);
             free(word);
         }
