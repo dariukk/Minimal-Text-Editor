@@ -132,7 +132,10 @@ void deleteNewLines(ListText *list)
 void gotoLine(ListText *list, int line, element nodeStack, int isUndo)
 {
     if (isUndo == 0)
+    {
         nodeStack.prevLine = list->cursor->line;
+        nodeStack.prevPos = list->cursor->pos;
+    }
 
     if (line == 1)
     {
