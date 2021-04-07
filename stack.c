@@ -7,6 +7,8 @@ element newElement()
     x.command = (char *)malloc(100 * sizeof(char));
     x.list = initList();
     x.num = 0;
+    x.prevPos = 0;
+    x.prevLine = 0;
 
     return x;
 }
@@ -48,9 +50,13 @@ void pop(Stack *s)
 element top(Stack *s)
 {
     element value;
+
     value = newElement();
     strcpy(value.command, s->top->value.command);
     value.num = s->top->value.num;
+    value.prevLine = s->top->value.prevLine;
+    value.beginofLine = s->top->value.beginofLine;
+    value.prevPos = s->top->value.prevPos;
 
     for (Node *node = s->top->value.list->head; node != NULL; node = node->next)
         insertCharacter(value.list, node->elem);
