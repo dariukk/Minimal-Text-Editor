@@ -1,5 +1,7 @@
 #define addtext "addtext"
 #define del "d"
+#define gochar "gc"
+#define goline "gl"
 
 #ifndef EDITOR_H_
 #define EDITOR_H_
@@ -44,6 +46,7 @@ typedef struct element
 {
     char *command;
     int num, beginofLine;
+    int prevLine, prevPos;
     ListText *list;
 } element;
 
@@ -81,9 +84,9 @@ void printList(ListText *list, FILE *out);
 
 void insertCharacter(ListText *list, char elem);
 
-void gotoLine(ListText *list, int line);
+void gotoLine(ListText *list, int line, element nodeStack, int isUndo);
 
-void gotoChar(ListText *list, int pos, int line);
+void gotoChar(ListText *list, int pos, int line, element *nodeStack, int isUndo);
 
 void deleteLine(ListText *list, int line);
 
