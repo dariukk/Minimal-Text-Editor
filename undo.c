@@ -26,7 +26,7 @@ void undo(ListText *list, Stack *undoStack, Stack *redoStack)
             --num;
         }
     }
-    else if (strcmp(value.command, gochar) == 0)
+    else if (strcmp(value.command, gochar) == 0 || strcmp(value.command, goline) == 0)
     {
         int auxLine = list->cursor->line, auxPos = list->cursor->pos;
         gotoChar(list, value.prevPos, value.prevLine, &value, 1);
@@ -34,11 +34,9 @@ void undo(ListText *list, Stack *undoStack, Stack *redoStack)
         value.prevLine = auxLine;
         value.prevPos = auxPos;
     }
-    else if (strcmp(value.command, goline) == 0)
+    else if (strcmp(value.command, deleteword) == 0)
     {
-        int auxLine = list->cursor->line;
-        gotoLine(list, value.prevLine, value, 1);
-        value.prevLine = auxLine;
+        
     }
 
     push(redoStack, value);
