@@ -129,8 +129,11 @@ void deleteNewLines(ListText *list)
     }
 }
 
-void gotoLine(ListText *list, int line)
+void gotoLine(ListText *list, int line, element nodeStack, int isUndo)
 {
+    if (isUndo == 0)
+        nodeStack.prevLine = list->cursor->line;
+
     if (line == 1)
     {
         list->cursor = list->head;
@@ -144,9 +147,15 @@ void gotoLine(ListText *list, int line)
     list->cursor = node;
 }
 
-void gotoChar(ListText *list, int pos, int line)
+void gotoChar(ListText *list, int pos, int line, element *nodeStack, int isUndo)
 {
     Node *node = list->cursor;
+
+    if (isUndo == 0)
+    {
+        nodeStack->prevLine = list->cursor->line;
+        nodeStack->prevPos = list->cursor->pos;
+    }
 
     if (line != 0)
     {
@@ -187,6 +196,23 @@ void deleteLine(ListText *list, int line)
         return;
     }
 
+    if (line == list->tail->line)
+    {
+        Node *node = list->tail;
+
+        while (node != NULL && node->line == line)
+        {
+            Node *p = node->prev;
+            free(node);
+            node = p;
+        }
+
+        list->tail = node;
+        list->cursor = node;
+
+        return;
+    }
+
     Node *node1, *node2;
 
     node1 = list->head;
@@ -205,6 +231,7 @@ void deleteLine(ListText *list, int line)
 
     node1->next = node2;
     node2->prev = node1;
+    list->cursor = node2;
 
     while (p != q)
     {
