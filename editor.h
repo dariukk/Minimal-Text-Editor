@@ -3,6 +3,7 @@
 #define gochar "gc"
 #define goline "gl"
 #define deleteword "dw"
+#define simple_replace "re"
 
 #ifndef EDITOR_H_
 #define EDITOR_H_
@@ -45,7 +46,7 @@ typedef struct ListText
 
 typedef struct element
 {
-    char *command;
+    char *command, *new, *old;
     int num, beginofLine;
     int prevLine, prevPos;
     ListText *list;
@@ -103,9 +104,9 @@ int getNum(char *s);
 
 int digits(int num);
 
-void undo(ListText *list, Stack *undoStack, Stack *redoStack);
+void undo(ListText **list, Stack **undoStack, Stack **redoStack);
 
-void redo(ListText *list, Stack *undoStack, Stack *redoStack);
+void redo(ListText **list, Stack **undoStack, Stack **redoStack);
 
 void deleteList(ListText **list);
 
@@ -115,7 +116,7 @@ char *getString(char *s);
 
 void replace(ListText *list, char *old, char *new);
 
-void deleteWord(ListText *list, char *word);
+void deleteWord(ListText *list, char *word, element *nodeStack);
 
 void replaceAll(ListText *list, char *old, char *new);
 
