@@ -5,6 +5,10 @@ element newElement()
     element x;
 
     x.command = (char *)malloc(100 * sizeof(char));
+    x.new = (char *)malloc(100 * sizeof(char));
+    x.old = (char *)malloc(100 * sizeof(char));
+    strcpy(x.new,"");
+    strcpy(x.old,"");
     x.list = initList();
     x.num = 0;
     x.prevPos = 0;
@@ -35,6 +39,8 @@ void push(Stack *s, element value)
 void deleteNodeStack(NodeStack *node)
 {
     free(node->value.command);
+    free(node->value.new);
+    free(node->value.old);
     deleteList(&node->value.list);
     free(node->value.list);
     free(node);
@@ -53,6 +59,8 @@ element top(Stack *s)
 
     value = newElement();
     strcpy(value.command, s->top->value.command);
+    strcpy(value.new, s->top->value.new);
+    strcpy(value.old, s->top->value.old);
     value.num = s->top->value.num;
     value.prevLine = s->top->value.prevLine;
     value.beginofLine = s->top->value.beginofLine;
