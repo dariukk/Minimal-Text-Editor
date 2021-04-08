@@ -271,6 +271,7 @@ void backspace(ListText *list, int isUndo)
             node->prev->next = node->next;
             node->next->prev = node->prev;
             list->cursor = node->prev;
+            free(node);
             return;
         }
 
@@ -463,7 +464,7 @@ void replaceAll(ListText *list, char *old, char *new)
     }
 }
 
-void deleteWord(ListText *list, char *word)
+void deleteWord(ListText *list, char *word, element *nodeStack)
 {
     Node *node = list->cursor;
 
@@ -485,6 +486,12 @@ void deleteWord(ListText *list, char *word)
 
             node->prev->next = aux;
             aux->prev = node->prev;
+
+            if (list->cursor == node)
+                list->cursor = aux;
+
+            nodeStack->prevLine = aux->line;
+            nodeStack->prevPos = aux->pos;
 
             // eliberez memoria
             Node *p = node;
