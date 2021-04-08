@@ -62,7 +62,6 @@ int doCommands(ListText *list, ListText *finalList)
 
     while (fgets(command, 100, in))
     {
-
         if (command[strlen(command) - 1] == '\n')
             command[strlen(command) - 1] = '\0';
 
@@ -132,8 +131,17 @@ int doCommands(ListText *list, ListText *finalList)
             // se efectueaza operatia delete word
 
             char *word;
+            element node = newElement();
+
             word = getString(command + 3);
-            deleteWord(list, word);
+            int len = strlen(word);
+            strcpy(node.command, deleteword);
+
+            for (int i = 0; i < len; ++i)
+                insertCharacter(node.list, word[i]);
+
+            deleteWord(list, word, &node);
+            push(undoStack, node);
 
             free(word);
         }
@@ -164,17 +172,22 @@ int doCommands(ListText *list, ListText *finalList)
         else if (command[0] == 'u')
         {
             // se efectueaza operatia de undo
-            undo(list, undoStack, redoStack);
+            undo(&list, &undoStack, &redoStack);
         }
         else if (command[0] == 'r' && command[1] == 'e')
         {
             // se efectueaza operatia replace
             char *old, *new;
+            element node = newElement();
 
             old = getString(command + 3);
             new = getString(command + 4 + strlen(old));
+            strcpy(node.new, old);
+            strcpy(node.old, new);
+            strcpy(node.command, simple_replace);
 
             replace(list, old, new);
+            push(undoStack, node);
 
             free(old);
             free(new);
@@ -195,7 +208,7 @@ int doCommands(ListText *list, ListText *finalList)
         else if (command[0] == 'r')
         {
             // se efectueaza operatia de redo
-            redo(list, undoStack, redoStack);
+            redo(&list, &undoStack, &redoStack);
         }
 
         reorderLines(list);
