@@ -4,6 +4,8 @@ FILE *in, *out;
 Stack *undoStack;
 Stack *redoStack;
 
+// ---------------mod inserare text----------------------
+
 int addText(ListText *list)
 {
     char chr;
@@ -19,6 +21,8 @@ int addText(ListText *list)
 
         if (chr != ':')
         {
+            // inserez un caracter in lista
+
             if (ok == 1)
                 insertCharacter(list, ':'), node.num++;
             insertCharacter(list, chr);
@@ -30,10 +34,13 @@ int addText(ListText *list)
         {
             if (ok == 1)
             {
+                // daca se introduce o singura linie in interiorul textului
+                // nu mai adaugat caracterul '\n' (new line)
                 if (multipleLines <= 1)
                     if (list->cursor != list->tail)
                         backspace(list, 1);
 
+                // introduc comanda inserare text in stiva pentru undo
                 push(undoStack, node);
 
                 // se trece la modul de inserare comenzi
@@ -52,6 +59,8 @@ int addText(ListText *list)
 
     return 0;
 }
+
+// ---------------mod inserare comenzi----------------------
 
 int doCommands(ListText *list, ListText *finalList)
 {
@@ -93,6 +102,8 @@ int doCommands(ListText *list, ListText *finalList)
             gotoLine(list, line, node, 0);
 
             beginofLine = 1;
+
+            // adaug comanda gl in stiva de undo
             push(undoStack, node);
         }
         else if (command[0] == 'd' && command[1] == 'l')
@@ -119,11 +130,12 @@ int doCommands(ListText *list, ListText *finalList)
             gotoChar(list, chr, line, &node, 0);
             beginofLine = 0;
 
+            // adaug comanda gc in stiva de undo
             push(undoStack, node);
         }
         else if (command[0] == 'b')
         {
-            //sterge caracterul de dinaintea cursorului
+            // sterg caracterul de dinaintea cursorului
             backspace(list, 0);
         }
         else if (command[0] == 'd' && command[1] == 'w')
@@ -141,13 +153,15 @@ int doCommands(ListText *list, ListText *finalList)
                 insertCharacter(node.list, word[i]);
 
             deleteWord(list, word, &node);
+
+            // adaug operatia dw in stiva de undo
             push(undoStack, node);
 
             free(word);
         }
         else if (command[0] == 'd' && command[1] == 'a')
         {
-            // se efectueaza operatia delete word
+            // se efectueaza operatia delete all words
             char *word;
             word = getString(command + 3);
 
@@ -156,7 +170,7 @@ int doCommands(ListText *list, ListText *finalList)
         }
         else if (command[0] == 'd')
         {
-            // sterge un numar de caractere incepand cu pozitia curenta
+            // sterge un numar num de caractere incepand cu pozitia curenta
             element node = newElement();
             int num = getNum(command + 2);
 
@@ -167,11 +181,13 @@ int doCommands(ListText *list, ListText *finalList)
                 node.num = 1;
 
             delete (list, num, beginofLine, node);
+
+            // adaug operatia d in stiva de undo
             push(undoStack, node);
         }
         else if (command[0] == 'u')
         {
-            // se efectueaza operatia de undo
+            // se efectueaza operatia undo
             undo(&list, &undoStack, &redoStack);
         }
         else if (command[0] == 'r' && command[1] == 'e')
@@ -187,6 +203,8 @@ int doCommands(ListText *list, ListText *finalList)
             strcpy(node.command, simple_replace);
 
             replace(list, old, new);
+
+            // adaug operatia re in stiva de undo
             push(undoStack, node);
 
             free(old);
@@ -207,7 +225,7 @@ int doCommands(ListText *list, ListText *finalList)
         }
         else if (command[0] == 'r')
         {
-            // se efectueaza operatia de redo
+            // se efectueaza operatia redo
             redo(&list, &undoStack, &redoStack);
         }
 
@@ -258,6 +276,7 @@ int main()
 
     printList(finalList, out);
 
+    // sterg continutul listelor si eliberez memoria
     deleteList(&list);
     deleteList(&finalList);
     deleteStack(undoStack);
@@ -268,6 +287,7 @@ int main()
     free(undoStack);
     free(redoStack);
 
+    // inchid fisierele de intrare, respectiv iesire
     fclose(in);
     fclose(out);
 }
