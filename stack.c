@@ -7,8 +7,8 @@ element newElement()
     x.command = (char *)malloc(100 * sizeof(char));
     x.new = (char *)malloc(100 * sizeof(char));
     x.old = (char *)malloc(100 * sizeof(char));
-    strcpy(x.new,"");
-    strcpy(x.old,"");
+    strcpy(x.new, "");
+    strcpy(x.old, "");
     x.list = initList();
     x.num = 0;
     x.prevPos = 0;
@@ -19,6 +19,7 @@ element newElement()
 
 Stack *initStack()
 {
+    // initializez stiva stack
     Stack *stack;
 
     stack = (Stack *)malloc(sizeof(Stack));
@@ -29,6 +30,7 @@ Stack *initStack()
 
 void push(Stack *s, element value)
 {
+    // aduag un element in stiva
     NodeStack *node = (NodeStack *)malloc(sizeof(NodeStack));
 
     node->value = value;
@@ -48,6 +50,7 @@ void deleteNodeStack(NodeStack *node)
 
 void pop(Stack *s)
 {
+    // elimin elementul din varful stivei
     NodeStack *node = s->top;
     s->top = s->top->next;
     deleteNodeStack(node);
@@ -55,6 +58,7 @@ void pop(Stack *s)
 
 element top(Stack *s)
 {
+    // returneaza valoarea elementului din varful stivei
     element value;
 
     value = newElement();
@@ -66,7 +70,8 @@ element top(Stack *s)
     value.beginofLine = s->top->value.beginofLine;
     value.prevPos = s->top->value.prevPos;
 
-    for (Node *node = s->top->value.list->head; node != NULL; node = node->next)
+    for (Node *node = s->top->value.list->head;
+         node != NULL; node = node->next)
         insertCharacter(value.list, node->elem);
 
     return value;
@@ -74,6 +79,8 @@ element top(Stack *s)
 
 void deleteStack(Stack *s)
 {
+    // sterg elementele din stiva s si eliberez memoria
+    
     NodeStack *node;
     node = s->top;
 
