@@ -2,7 +2,8 @@
 
 ListText *initList()
 {
-    // initializez atat cele doua liste cat si stiva
+    // initializez lista
+
     ListText *list = (ListText *)malloc(sizeof(ListText));
     list->head = NULL;
     list->tail = NULL;
@@ -13,6 +14,7 @@ ListText *initList()
 
 void printList(ListText *list, FILE *out)
 {
+    // afisez elementele listei list
     Node *node;
 
     for (node = list->head; node != NULL; node = node->next)
@@ -113,6 +115,7 @@ void insertCharacter(ListText *list, char elem)
 
 void deleteNewLines(ListText *list)
 {
+    // sterg liniile goale
     Node *node = list->head;
 
     while (node->next)
@@ -129,14 +132,18 @@ void deleteNewLines(ListText *list)
     }
 }
 
+// implementarea comenzii goto line (gl)
 void gotoLine(ListText *list, int line, element nodeStack, int isUndo)
 {
+    // daca comanda nu este apelata in cadrul comenzii undo
+    // retin pozitia anteriora a cursorului
     if (isUndo == 0)
     {
         nodeStack.prevLine = list->cursor->line;
         nodeStack.prevPos = list->cursor->pos;
     }
 
+    // mut cursorul pe linia line
     if (line == 1)
     {
         list->cursor = list->head;
@@ -150,16 +157,21 @@ void gotoLine(ListText *list, int line, element nodeStack, int isUndo)
     list->cursor = node;
 }
 
+// implementarea functiei goto character (gc)
 void gotoChar(ListText *list, int pos, int line, element *nodeStack, int isUndo)
 {
     Node *node = list->cursor;
 
+    // daca comanda nu este apelata in cadrul comenzii undo
+    // retin pozitia anteriora a cursorului
     if (isUndo == 0)
     {
         nodeStack->prevLine = list->cursor->line;
         nodeStack->prevPos = list->cursor->pos;
     }
 
+    // daca este specificata linia line
+    // cursorul este mutat pe linia line
     if (line != 0)
     {
         if (line > node->line)
@@ -170,6 +182,7 @@ void gotoChar(ListText *list, int pos, int line, element *nodeStack, int isUndo)
                 node = node->prev;
     }
 
+    // cursorul este mutat pe pozitia pos
     if (pos > node->pos)
         while (node->pos != pos && node->next)
             node = node->next;
@@ -180,8 +193,10 @@ void gotoChar(ListText *list, int pos, int line, element *nodeStack, int isUndo)
     list->cursor = node;
 }
 
+// implementarea comenzii delete line (dl)
 void deleteLine(ListText *list, int line)
 {
+    // daca prima linie este stearsa
     if (line == 1)
     {
         Node *node = list->head;
@@ -199,6 +214,7 @@ void deleteLine(ListText *list, int line)
         return;
     }
 
+    // daca ultima linie este stearsa
     if (line == list->tail->line)
     {
         Node *node = list->tail;
@@ -216,15 +232,22 @@ void deleteLine(ListText *list, int line)
         return;
     }
 
+    // daca linia care trebuie sa fie stearsa nu este nici prima nici ultima
+
     Node *node1, *node2;
+
+    // node1 va fi nodul asociat ultimului caracter de pe linia line-1
+    // node2 va fi nodul asociat primului caracter de pe linia line+1
 
     node1 = list->head;
     node2 = list->tail;
 
-    while (node1 != NULL && !(node1->line == line - 1 && node1->next->line == line))
+    while (node1 != NULL && !(node1->line == line - 1 &&
+                              node1->next->line == line))
         node1 = node1->next;
 
-    while (node2 != NULL && !(node2->line == line + 1 && node2->prev->line == line))
+    while (node2 != NULL && !(node2->line == line + 1 &&
+                              node2->prev->line == line))
     {
         node2->line--;
         node2 = node2->prev;
@@ -236,6 +259,7 @@ void deleteLine(ListText *list, int line)
     node2->prev = node1;
     list->cursor = node2;
 
+    // eliberez memoria
     while (p != q)
     {
         Node *aux = p;
@@ -247,6 +271,7 @@ void deleteLine(ListText *list, int line)
         free(p);
 }
 
+// implementarea comenzii save (s)
 void save(ListText *list, ListText *finalList)
 {
     // copiez in finalList elementele listei list
@@ -257,8 +282,10 @@ void save(ListText *list, ListText *finalList)
         insertCharacter(finalList, node->elem);
 }
 
+// implementarea comenzii backspace (b)
 void backspace(ListText *list, int isUndo)
 {
+    // daca cursorul se afla pe ultima pozitie din text
     if (list->cursor == list->tail)
     {
         if (list->tail->elem == '\n' && isUndo == 0)
@@ -284,6 +311,7 @@ void backspace(ListText *list, int isUndo)
         return;
     }
 
+    // daca se aplica comanda backspace pe un element diferit de ultimul
     Node *node = list->cursor;
     node->prev->next = node->next;
     node->next->prev = node->prev;
@@ -291,6 +319,7 @@ void backspace(ListText *list, int isUndo)
     free(node);
 }
 
+// implementarea comenzii delete (d)
 void delete (ListText *list, int num, int beginofLine, element nodeStack)
 {
     if (num == 0)
@@ -340,6 +369,7 @@ void delete (ListText *list, int num, int beginofLine, element nodeStack)
         list->cursor = node;
 }
 
+// implementarea comenzii replace (re)
 void replace(ListText *list, char *old, char *new)
 {
     Node *node = list->cursor;
@@ -397,6 +427,7 @@ void replace(ListText *list, char *old, char *new)
     }
 }
 
+// implementarea comenzii replace all (ra)
 void replaceAll(ListText *list, char *old, char *new)
 {
     Node *node = list->head;
@@ -464,6 +495,7 @@ void replaceAll(ListText *list, char *old, char *new)
     }
 }
 
+// implementarea comenzii delete word (dw)
 void deleteWord(ListText *list, char *word, element *nodeStack)
 {
     Node *node = list->cursor;
@@ -483,7 +515,6 @@ void deleteWord(ListText *list, char *word, element *nodeStack)
         if (i == len)
         {
             // am gasit prima aparitie a lui word
-
             node->prev->next = aux;
             aux->prev = node->prev;
 
@@ -509,6 +540,7 @@ void deleteWord(ListText *list, char *word, element *nodeStack)
     }
 }
 
+// implementarea operatiei delete all (da)
 void deleteAllWords(ListText *list, char *word)
 {
     Node *node = list->head;
@@ -528,7 +560,6 @@ void deleteAllWords(ListText *list, char *word)
         if (i == len)
         {
             // am gasit o aparitie a lui word
-
             if (node == list->head)
             {
                 list->head = aux;
@@ -559,6 +590,7 @@ void deleteAllWords(ListText *list, char *word)
     }
 }
 
+// determin primul numar dintr-un sir
 int getNum(char *s)
 {
     int ans = 0, l = strlen(s), i = 0;
@@ -568,6 +600,7 @@ int getNum(char *s)
     return ans;
 }
 
+// determin numarul de cifre ale unui numar
 int digits(int num)
 {
     int ans = 0;
@@ -580,6 +613,7 @@ int digits(int num)
     return ans;
 }
 
+// determin primul cuvant dintr-un sir
 char *getString(char *s)
 {
     char *ans = (char *)malloc(25 * sizeof(char));
