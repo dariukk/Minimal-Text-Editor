@@ -7,6 +7,7 @@ void undo(ListText **list, Stack **undoStack, Stack **redoStack)
 
     if (strcmp(value.command, addtext) == 0)
     {
+        // undo inserare text
         int num = value.num;
         while (num)
         {
@@ -17,6 +18,7 @@ void undo(ListText **list, Stack **undoStack, Stack **redoStack)
     }
     else if (strcmp(value.command, del) == 0)
     {
+        // undo delete
         int num = value.num;
         Node *node = value.list->head;
         while (num)
@@ -26,8 +28,11 @@ void undo(ListText **list, Stack **undoStack, Stack **redoStack)
             --num;
         }
     }
-    else if (strcmp(value.command, gochar) == 0 || strcmp(value.command, goline) == 0)
+    else if (strcmp(value.command, gochar) == 0 ||
+             strcmp(value.command, goline) == 0)
     {
+        // undo goto character, respectiv goto line
+
         int auxLine = (*list)->cursor->line, auxPos = (*list)->cursor->pos;
         gotoChar(*list, value.prevPos, value.prevLine, &value, 1);
 
@@ -36,6 +41,8 @@ void undo(ListText **list, Stack **undoStack, Stack **redoStack)
     }
     else if (strcmp(value.command, deleteword) == 0)
     {
+        // undo delete word
+
         gotoChar(*list, value.prevPos, value.prevLine, &value, 1);
         Node *node = value.list->head;
 
@@ -48,6 +55,8 @@ void undo(ListText **list, Stack **undoStack, Stack **redoStack)
     }
     else if (strcmp(value.command, simple_replace) == 0)
     {
+        // undo replace
+        
         char *aux = (char *)malloc(50 * sizeof(char));
 
         replace(*list, value.old, value.new);
