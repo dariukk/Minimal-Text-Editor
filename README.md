@@ -1,38 +1,22 @@
 # Tema 1 SD - Daria-Mihaela Florea, 311CC
 
-    Implementarea editorului a fost realizata pe parcursul a doua saptamani, 
-insumand un total de peste 20 de ore de scris cod si facut debugging.
+    Implementarea editorului a fost realizata pe parcursul a doua saptamani, insumand un total de peste 20 de ore de scris cod si facut debugging.
 
-    Pentru realizarea editorului de text au fost implementate cinci fisiere 
-sursa C (editor.c, commands.c, stack.c, undo.c, redo.c), respectiv un header
-(editor.h).
+    Pentru realizarea editorului de text au fost implementate cinci fisiere sursa C (editor.c, commands.c, stack.c, undo.c, redo.c), respectiv un header (editor.h).
 
 
   # editor.c
 
-    In editor.c sunt implementate trecerea de la modul inserare text la modul
-modul inserare comenzi pana la intalnirea comenzii q, respectiv implemntarile 
-celor doua moduri. 
-    Modul inserare text va adauga intr-o lista de caractere 
-in pozitia cursorului (cu ajutorul functie insertCharacter) textul introdus de 
-utilizator. Aceasta operatie este repetata pana la intalnirea comenzii ::i prin
-care se face trecerea la modul inserare comenzi. La finalul acestui mod operatia
-va fi adaugata in stiva de undo (undoStack).
-    Modul inserare comenzi citeste pana la intalnirea comenzii ::i sau a 
-comenzii q comenzile introduse de utilizator si apeleaza functiile necesare 
-pentru efectuarea acestora, iar dupa apel adauga in stiva de undo (undoStack)
-operatia anterior realizata si apeleaza functiile reorderLines (dupa anumite 
-comenzi este posibil ca numarul liniilor sa se schimbe) si deleteNewLines
-(textul final nu trebuie sa contina linii goale).
+    In editor.c sunt implementate trecerea de la modul inserare text la modul inserare comenzi pana la intalnirea comenzii q, respectiv implemntarile celor doua moduri. 
+    Modul inserare text va adauga intr-o lista de caractere in pozitia cursorului (cu ajutorul functie insertCharacter) textul introdus de utilizator. Aceasta operatie este repetata pana la intalnirea comenzii ::i prin care se face trecerea la modul inserare comenzi. La finalul acestui mod operatia va fi adaugata in stiva de undo (undoStack).
+    Modul inserare comenzi citeste pana la intalnirea comenzii ::i sau a comenzii q comenzile introduse de utilizator si apeleaza functiile necesare pentru efectuarea acestora, iar dupa apel adauga in stiva de undo (undoStack) operatia anterior realizata si apeleaza functiile reorderLines (dupa anumite comenzi este posibil ca numarul liniilor sa se schimbe) si deleteNewLines (textul final nu trebuie sa contina linii goale).
 
 
   #  commands.c
 
-    In commands.c sunt implementate functiile corespunzatoare implementarii
-tuturor comenzilor, cu exceptia comenzilor undo si redo.
+    In commands.c sunt implementate functiile corespunzatoare implementarii tuturor comenzilor, cu exceptia comenzilor undo si redo.
     
-    Pentru comanda save apelez functia save, in care sterg elementele existente
-in lista finalList si copiez in aceasta elementele listei list.
+    Pentru comanda save apelez functia save, in care sterg elementele existente in lista finalList si copiez in aceasta elementele listei list.
     
     Pentru comanda goto line apelez functia gotoLine care muta cursorul pe linia
 indicata si retine pozitia anterioara a cursorului daca comanda nu este apelata
