@@ -23,11 +23,11 @@ indicata si retine pozitia anterioara a cursorului daca comanda nu este apelata
 in cadrul comenzii undo. In mod asemanator, pentru comanda goto character, 
 functia gotoChar muta cursorul in pozitia indicata.
 
-    Pentru comanda delete line apelez functia deleteLine. Aceasta trateaza trei 
+    Pentru comanda delete line apelez functia deleteLine. Aceasta trateaza trei
 cazuri distincte: 
     1) prima linie este stearsa 
     2) ultima linie este stearsa
-    3) o linie din interiorul textului este stearsa
+    3) o linie din interiorul textului este stearsa*/
 
     Pentru comanda backspace apelez functia cu acelasi nume. Aceasta trateaza 
 doua cazuri:
