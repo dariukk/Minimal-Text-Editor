@@ -42,7 +42,7 @@ typedef struct ListText
 #ifndef NODESTACK
 #define NODESTACK
 
-// declararea stivei pentru comenzi
+// declararea stivelor pentru comenzi
 
 typedef struct element
 {
@@ -69,6 +69,8 @@ typedef struct Stack
 } Stack;
 
 #endif
+
+// antetele functiilor folosite
 
 Stack *initStack();
 
